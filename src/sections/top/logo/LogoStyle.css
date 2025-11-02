@@ -7,7 +7,7 @@
 
 /* 로고 이미지 */
 .logo__img {
-  width: 64px;      /* ✅ 실제 로고 크기 */
+  width: 64px; /* ✅ 실제 로고 크기 */
   height: 64px;
   object-fit: contain;
 }
@@ -23,8 +23,8 @@
 .logo__text {
   font-size: 1.75rem; /* 20px */
   font-weight: 600;
-  color: #0f172a;      /* slate-900 */
+  color: #0f172a; /* slate-900 */
   letter-spacing: -0.3px;
   white-space: nowrap; /* 줄바꿈 방지 */
-  margin-left: 15px;  /* ← 오른쪽으로 살짝 밀기 */
+  margin-left: 15px; /* ← 오른쪽으로 살짝 밀기 */
 }

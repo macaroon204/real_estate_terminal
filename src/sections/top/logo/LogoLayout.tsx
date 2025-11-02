@@ -12,7 +12,7 @@ export default function LogoLayout({ imgSrc }: LogoLayoutProps) {
       ) : (
         <div className="logo__fallback" aria-hidden />
       )}
-    <span className="logo__text">부동산 터미널</span>
+      <span className="logo__text">부동산 터미널</span>
     </div>
   );
 }
