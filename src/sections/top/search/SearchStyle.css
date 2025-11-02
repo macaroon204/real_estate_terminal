@@ -1,0 +1,45 @@
+/* src/sections/top/search/SearchStyle.css */
+.search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto; /* 상단에서 로고 오른쪽으로 밀림 */
+}
+
+.search__input {
+  width: 360px;
+  max-width: 48vw;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #e5e7eb; /* gray-200 */
+  border-radius: 10px;
+  background: #f9fafb;       /* gray-50 */
+  color: #0f172a;            /* slate-900 */
+  font-size: 14px;
+  outline: none;
+}
+
+.search__input:focus {
+  border-color: #0ea5e9;     /* sky-500 */
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+.search__btn {
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #0ea5e9;
+  background: #0ea5e9;
+  color: #ffffff;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search__btn:hover {
+  filter: brightness(0.95);
+}
+
+.search__btn:active {
+  transform: translateY(1px);
+}
