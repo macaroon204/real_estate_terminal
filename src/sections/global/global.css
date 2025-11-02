@@ -1,0 +1,40 @@
+/* 전체 프레임: 상단(auto) + 본문(1fr) */
+.global-layout {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100dvh; /* 모바일 주소창 고려 */
+  background: #fafafa;
+  color: #0f172a; /* slate-900 */
+}
+
+/* 본문: 좌측 패널(고정폭) + 중앙(가변) */
+.global-body {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 0; /* 내부 스크롤 허용 */
+}
+
+/* 상단 */
+.global-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb; /* gray-200 */
+}
+
+/* 좌측 */
+.global-left {
+  background: #f9fafb;
+  border-right: 1px solid #e5e7eb;
+  overflow: auto;
+  padding: 8px;
+}
+
+/* 중앙 */
+.global-center {
+  overflow: auto;
+  background: #ffffff;
+  padding: 12px;
+}
