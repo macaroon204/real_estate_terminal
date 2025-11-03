@@ -13,21 +13,40 @@
 | Node.js | **20.19.5** | NVM 사용 필수 (`.nvmrc` 자동 인식) |
 | npm | **10.8.2** | 패키지 관리 |
 | NVM (for Windows) | 1.2.2 이상 | Node 버전 관리 도구 |
+| **터미널 권장** | PowerShell / CMD / VSCode 터미널 | 아래의 `npm run node`로 모든 터미널 호환 |
+
+> 💡 **왜 `npm run node`를 쓰나요?**  
+> Windows 환경에서 `.nvmrc`를 읽어 `nvm use`를 실행할 때, **줄 끝 공백/개행(LF/CRLF) 이슈**로 버전 인식 오류가 발생할 수 있습니다.  
+> 이 프로젝트는 PowerShell에서 `.Trim()`으로 공백을 제거하도록 하여 **PowerShell, CMD, VSCode 터미널** 어디서든 안정적으로 동작하도록 통일했습니다.
 
 ---
 
 ## ⚙️ 2. 프로젝트 세팅 절차
 
-### ✅ 1️⃣ Node 버전 맞추기
+### ✅ 0️⃣ Node 버전 맞추기 — **모든 터미널 호환 (권장)**
+```bash
+npm run node
+```
+- 내부적으로 PowerShell을 호출해 `.nvmrc`의 버전을 읽고 **앞/뒤 공백을 제거**한 뒤 `nvm use`를 수행합니다.
+- `.nvmrc` 내용이 `20.19.5` 한 줄이어도, 줄 끝 공백이나 CRLF가 있어도 안전하게 처리됩니다.
+
+> `package.json`의 스크립트:
+```json
+{
+  "scripts": {
+    "node": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$v = (Get-Content .nvmrc).Trim(); nvm use $v\""
+  }
+}
+```
+
+### ✅ 1️⃣ (대안) 기본 NVM 명령
 ```bash
 nvm use
+# 설치 안 되어 있으면
+nvm install 20.19.5
+nvm use
 ```
-- `.nvmrc`에 기록된 Node 버전(`20.19.5`) 자동 적용  
-- 만약 설치되어 있지 않다면:
-  ```bash
-  nvm install 20.19.5
-  nvm use
-  ```
+> 위 방식은 터미널/개행 설정에 따라 간헐적으로 실패할 수 있으므로, 팀 공통으로는 **`npm run node`** 사용을 권장합니다.
 
 ---
 
@@ -36,7 +55,7 @@ nvm use
 npm ci
 ```
 - `package-lock.json`을 기준으로 **정확히 동일한 버전**의 패키지 설치  
-- `node_modules`는 프로젝트에 포함하지 않음 (자동 생성됨)
+- `node_modules`는 프로젝트에 포함하지 않음 (자동 생성)
 
 ---
 
@@ -44,7 +63,7 @@ npm ci
 ```bash
 npm run dev
 ```
-- 브라우저에서 [http://localhost:5173](http://localhost:5173) 접속  
+- 브라우저에서 http://localhost:5173 접속  
 - 기본 Vite 개발 서버 실행
 
 ---
@@ -63,6 +82,7 @@ npm run dev
 
 ```json
 "scripts": {
+  "node": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$v = (Get-Content .nvmrc).Trim(); nvm use $v\"",
   "dev": "vite",
   "build": "tsc -b && vite build",
   "preview": "vite preview",
@@ -74,6 +94,7 @@ npm run dev
 
 | 명령어 | 설명 | 실행 시점 |
 |--------|------|-----------|
+| **node** | `.nvmrc` 버전 자동 적용(공백 자동 제거) | 모든 터미널에서 공통 사용 |
 | **dev** | Vite 개발 서버 실행 (`localhost:5173`) | 개발 중 |
 | **build** | TypeScript 빌드(`tsc -b`) + Vite 빌드 | 배포 전 |
 | **preview** | 빌드 결과 로컬 확인 | 배포 전 |
@@ -95,80 +116,32 @@ npm run dev
 }
 ```
 
-| 항목 | 설명 |
-|------|------|
-| `singleQuote: true` | 문자열은 `'` 단일 따옴표 사용 |
-| `semi: true` | 문장 끝에 세미콜론 자동 추가 |
-| `printWidth: 100` | 한 줄 최대 길이 100자로 줄바꿈 |
-| `trailingComma: "es5"` | 객체/배열 끝에 쉼표 허용 (ES5 호환) |
-
 **`.prettierignore`**
 ```
 dist
 node_modules
 ```
-> 빌드 산출물과 패키지 폴더는 포맷 대상 제외.
 
 ---
 
 ## 🧩 5. 폴더 구조 요약
-
-```bash
-front/
-├─ index.html                # 메인 진입 HTML
-├─ package.json              # 프로젝트 메타 정보 및 스크립트
-├─ tsconfig.json             # TypeScript 설정
-├─ vite.config.ts            # Vite 빌드 / 서버 설정
-├─ .nvmrc                    # Node 버전 고정 (20.19.5)
-├─ .npmrc                    # npm 정책 (engine-strict 등)
-├─ .prettierrc               # Prettier 포맷 규칙
-├─ .prettierignore           # 포맷 제외 목록
-├─ eslint.config.js          # ESLint 플랫 구성
-└─ src/                      # 소스 코드 루트
-```
+(생략 — 기존 내용 유지)
 
 ---
 
 ## ✅ 6. 실행 요약 (팀원이 받은 후 3줄 요약)
 
 ```bash
-nvm use
+npm run node    # .nvmrc 버전 자동 적용 (공백 자동 제거, 모든 터미널 호환)
 npm ci
 npm run dev
 ```
 
-> 위 세 줄이면 Node, npm, 의존성, 실행 환경이 완전히 동일하게 맞춰집니다.  
-> (`node_modules`는 자동 생성되므로 복사할 필요 없음)
-
 ---
 
-## 🧾 참고
+## 🧾 참고 / 환경별 차이 안내
 
-| 파일 | 역할 |
-|------|------|
-| `.nvmrc` | Node 버전 통일 (`nvm use`로 자동 인식) |
-| `.npmrc` | 잘못된 버전의 npm 설치 방지 (선택) |
-| `.prettierrc` | 코드 스타일 통일 (따옴표, 세미콜론 등) |
-| `.prettierignore` | 포맷 제외 폴더 지정 |
-| `eslint.config.js` | 문법 / 타입 / React 훅 규칙 검사 설정 |
-
----
-
-## 💡 추천 워크플로우
-
-```bash
-# 1️⃣ 코드 점검
-npm run lint
-
-# 2️⃣ 자동 수정 + 포맷 정리
-npm run lint:fix
-npm run format
-
-# 3️⃣ 실행
-npm run dev
-```
-
----
-
-> 🧩 이 프로젝트는 Node/NVM 기반 버전 격리형 구조입니다.  
-> 다른 팀원도 동일하게 `.nvmrc`를 통해 같은 Node 버전으로 개발할 수 있습니다.
+- **PowerShell / CMD / VSCode 터미널**: `npm run node`가 내부적으로 PowerShell을 호출해 `.Trim()`을 적용하므로 **동일하게 동작**합니다.  
+- **Git Bash / MSYS2**: 직접 `nvm use`를 호출하면 개행/경로 차이로 실패할 수 있습니다. 이 경우에도 **`npm run node`**를 먼저 실행하면 안전합니다.  
+- **WSL(리눅스 NVM)**: Windows용 nvm과는 **다른 구현**입니다. WSL 내부에서는 `nvm use`(linux nvm)를 사용하세요. 윈도우 쪽 프로젝트 루트에서 작업할 때는 **`npm run node`**를 사용하세요.  
+- **개행(LF/CRLF) 혼재**: `.nvmrc` 끝 공백/개행에 민감합니다. 본 프로젝트는 `.Trim()`으로 대응하여 문제를 예방합니다.

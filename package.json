@@ -8,6 +8,7 @@
   },
   "packageManager": "npm@10.8.2",
   "scripts": {
+    "node": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$v = (Get-Content .nvmrc).Trim(); nvm use $v\"",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
