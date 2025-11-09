@@ -1,0 +1,56 @@
+/* src/sections/left/metro/header.style.css */
+
+/* ... 기존 공통은 유지 … */
+
+.left-header__row {
+  user-select: none;
+  border-bottom: 1px solid #ececec;
+  /* ✨ 행 전체는 손가락 포인터 금지 */
+  cursor: default;
+}
+
+.left-header__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;          /* 터치 타겟 44px+ 유지 */
+  padding: 10px 12px;
+}
+
+.left-header__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* (옵션) 라벨 별도 클릭을 넣은 경우만 시각 피드백 */
+.left-header__label.is-clickable {
+  cursor: pointer;
+}
+
+.left-header__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  /* 아이콘 버튼만 포인터 */
+  cursor: pointer;
+}
+
+.left-header__icon:focus-visible {
+  outline: 2px solid #2684ff;
+  outline-offset: 2px;
+}
+
+.left-header__icon img {
+  width: 20px;
+  height: 20px;
+}
+
+.left-header__row.is-open .left-header__label {
+  color: #111;
+}

@@ -1,0 +1,13 @@
+/* 좌측 패널 리스트 공통 리셋 — 헤더/바디 공통 적용 */
+.left-list-root {
+  list-style: none;   /* ● 불릿 제거 */
+  margin: 0;          /* 기본 마진 제거 */
+  padding: 0;         /* 기본 들여쓰기 제거 */
+}
+
+/* 브라우저별 잔여 스타일 예방 */
+.left-list-root > li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

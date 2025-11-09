@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  aria-hidden="true"
+  role="img">
+  <!-- Right-pointing triangle. Designed for bright backgrounds. -->
+  <!-- Default fill is a dark gray; you can override by editing the 'fill' value or inlining the SVG and using CSS with 'fill: currentColor'. -->
+  <title>Toggle Triangle</title>
+  <desc>Right-pointing triangle for toggle indicators</desc>
+  <polygon points="8,5 8,19 18,12" fill="#111827"/>
+</svg>

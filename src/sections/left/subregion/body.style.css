@@ -1,0 +1,17 @@
+/* src/sections/left/subregion/body.style.css */
+
+.left-body__row {
+  border-bottom: 1px solid #f3f3f3;
+}
+
+.left-body__content {
+  min-height: 38px;
+  padding: 8px 12px 8px 28px; /* ← 들여쓰기 */
+  display: flex;
+  align-items: center;
+}
+
+.left-body__label {
+  font-size: 13px;
+  color: #333;
+}

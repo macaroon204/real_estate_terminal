@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  aria-hidden="true"
+  role="img">
+  <title>Toggle Triangle Open</title>
+  <desc>Downward-pointing triangle for open state</desc>
+  <!-- ▼ shape -->
+  <polygon points="5,9 19,9 12,17" fill="#111827"/>
+</svg>

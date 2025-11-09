@@ -1,18 +1,23 @@
+// src/pages/MainPage.tsx
 import PageFrame from '../sections/global/PageFrame';
 import Top from '../sections/top';
+import LeftPanel from '../sections/left'; 
 
 export default function MainPage() {
-  const Left = (
-    <nav>
-      <ul>
-        <li>서울특별시 ▸</li>
-        <li>부산광역시 ▸</li>
-      </ul>
-    </nav>
+  // 중앙 영역 (차트/테이블 등)
+  const Center = (
+    <div className="center-view">
+      중앙 시각화 영역 (차트/테이블 예정)
+    </div>
   );
 
-  const Center = <div>중앙 시각화 영역 (차트/테이블 예정)</div>;
-
-  // ✅ 진짜 Top 컴포넌트를 전달
-  return <PageFrame top={<Top />} left={Left} center={Center} />;
+  // 전체 프레임 조립
+  return (
+    <PageFrame
+      top={<Top />}    // 상단 로고/검색 바
+      left={<LeftPanel />}      // 좌측 지역 패널
+      center={Center}  // 중앙 본문
+    />
+  );
 }
+
