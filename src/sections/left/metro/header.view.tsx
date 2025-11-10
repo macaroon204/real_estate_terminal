@@ -47,7 +47,7 @@ export function MetroHeaderRow({ code, name, isOpen, onToggle, onLabelClick }: P
           onClick={onIconClick}
         >
           <img
-            src={isOpen ? iconCloseUrl : iconOpenUrl}
+            src={isOpen ?iconOpenUrl : iconCloseUrl}
             alt=""
             aria-hidden
           />
@@ -56,48 +56,3 @@ export function MetroHeaderRow({ code, name, isOpen, onToggle, onLabelClick }: P
     </li>
   );
 }
-
-
-// // src/sections/left/metro/header.view.tsx
-// import type { MouseEvent } from 'react';
-// import iconOpenUrl from './toggle_open.svg';
-// import iconCloseUrl from './toggle_close.svg';
-
-// type Props = {
-//   code: string;
-//   name: string;
-//   isOpen: boolean;
-//   onToggle: () => void;
-// };
-
-// export function MetroHeaderRow({ code, name, isOpen, onToggle }: Props) {
-//   const onIconClick = (e: MouseEvent) => {
-//     e.stopPropagation(); // (옵션) 행 전체 클릭과 분리하고 싶을 때
-//     onToggle();
-//   };
-
-//   return (
-//     <li
-//       className={`left-header__row${isOpen ? ' is-open' : ''}`}
-//       onClick={onToggle}
-//       data-code={code}
-//     >
-//       <div className="left-header__content">
-//         <span className="left-header__label">{name}</span>
-
-//         <button
-//           type="button"
-//           className="left-header__icon"
-//           aria-label={isOpen ? '닫기' : '열기'}
-//           onClick={onIconClick}
-//         >
-//           <img
-//             src={isOpen ? iconCloseUrl : iconOpenUrl}
-//             alt=""
-//             aria-hidden
-//           />
-//         </button>
-//       </div>
-//     </li>
-//   );
-// }
