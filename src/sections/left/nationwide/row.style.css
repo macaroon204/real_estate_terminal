@@ -1,0 +1,18 @@
+/* src/sections/left/nationwide/row.style.css */
+
+/* 기본 헤더 스타일(.left-header__row / __content / __label)은
+   metro/header.style.css 것을 그대로 쓰고,
+   여기서는 '전국' 전용 차이만 정의 */
+
+.left-header__row--nationwide {
+  background-color: #f8f9fa; /* 살짝 다른 배경 */
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.left-header__content--nationwide {
+  cursor: pointer;           /* 클릭 가능 표시 */
+}
+
+.left-header__label--nationwide {
+  font-weight: 600;          /* 조금 더 강조 */
+}

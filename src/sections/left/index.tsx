@@ -8,6 +8,9 @@ import { SubregionBodyRows } from './subregion/body.view';
 import './list.base.css';
 import './metro/header.style.css';
 import './subregion/body.style.css';
+import { NationwideRow } from './nationwide/row.view';
+import './nationwide/row.style.css';
+
 
 export default function LeftPanel() {
   // 아코디언: 복수 열림(권장)
@@ -25,6 +28,8 @@ export default function LeftPanel() {
 
   return (
     <ul className="left-list-root">
+      <NationwideRow />
+
       {metros.map(m => (
         <Fragment key={m.code}>
           {/* 헤더: 광역 1줄 (토글은 아이콘에서만) */}
