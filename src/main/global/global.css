@@ -1,3 +1,16 @@
+/* 브라우저 전체 높이 고정 + 전역 스크롤 제거 */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden; /* ✅ 윈도우 스크롤바 제거 */
+}
+
+
 /* 전체 프레임: 상단(auto) + 본문(1fr) */
 .global-layout {
   display: grid;
@@ -37,5 +50,5 @@
 .global-center {
   overflow: auto;
   background: #ffffff;
-  padding: 12px;
+  padding: 0;          /* ✅ 상단/좌우 패딩 제거 → 센터를 깨끗한 캔버스로 */
 }

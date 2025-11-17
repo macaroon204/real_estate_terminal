@@ -1,13 +1,14 @@
 // src/pages/MainPage.tsx
-import PageFrame from '../sections/global/PageFrame';
-import Top from '../sections/top';
-import LeftPanel from '../sections/left'; 
+import { Outlet } from 'react-router';
+import PageFrame from '../main/global/PageFrame';
+import Top from '../main/top';
+import LeftPanel from '../main/left'; 
 
 export default function MainPage() {
   // 중앙 영역 (차트/테이블 등)
   const Center = (
     <div className="center-view">
-      중앙 시각화 영역 (차트/테이블 예정)
+      <Outlet />
     </div>
   );
 
