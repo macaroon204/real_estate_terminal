@@ -1,0 +1,16 @@
+services:
+  db:
+    image: mariadb:11.4.8
+    container_name: realestate-mariadb
+    ports:
+      - "3307:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: "0000"
+      MARIADB_DATABASE: "realestate"
+    volumes:
+      - ./docker/db/init:/docker-entrypoint-initdb.d:ro
+      - ./docker/db/seed_csv:/seed_csv:ro
+    command:
+      - --local-infile=1
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_uca1400_as_cs

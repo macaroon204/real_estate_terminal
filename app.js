@@ -9,6 +9,8 @@ import { notFound } from './src/middlewares/notFound.js';
 
 import aliveRouter from './src/routes/alive/router.js';
 
+import landPriceIndexRouter from "./src/routes/landPriceIndex/router.js";
+
 loadEnv();
 
 const app = express();
@@ -18,6 +20,7 @@ applyAppSetup(app);
 
 // 라우터 장착
 app.use('/alive', aliveRouter);
+app.use("/land-price-index", landPriceIndexRouter);
 
 // 404는 반드시 라우터 뒤에
 app.use(notFound);
