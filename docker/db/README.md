@@ -46,3 +46,7 @@ SHOW TABLES;
 DESC region;
 SELECT COUNT(*) FROM region;
 ```
+## 7.
+'''
+curl "http://localhost:13800/land-price-index/sync?regionCode=500007"
+'''
