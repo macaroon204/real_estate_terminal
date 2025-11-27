@@ -1,38 +1,70 @@
-// client.js
+// src/services/landPriceIndex/client.js
 'use strict';
-import axios from "axios";
 
-const BASE = "https://www.reb.or.kr/r-one/openapi/SttsApiTblData.do";
+import axios from 'axios';
 
+const BASE = 'https://www.reb.or.kr/r-one/openapi/SttsApiTblData.do';
+
+// ------------------------------------------------------------
+// 년월 필드 추출 → YYYYMM 으로 정규화
+// ------------------------------------------------------------
 function pickYm(row) {
-  // R-ONE row에서 날짜/년월 필드명 후보들
-  return (
-    row.WRTTIME ||                 // 어떤 통계는 이걸 씀
-    row.WRTTIME_IDTFR_ID ||        // 월별 통계에서 자주 나옴 (YYYYMM)
-    row.WRTTIME_ID ||              // 간혹 이렇게 옴
-    row.STDR_DE ||                 // 기준일자
-    row.PRD_DE ||                  // 기간/년월
-    null
-  );
+  const raw =
+    row.WRTTIME_IDTFR_ID || // 명세서 기준 "자료작성 시점" (CHAR(8))
+    row.WRTTIME ||          // 다른 통계에서 사용될 수 있음
+    row.STDR_DE ||
+    row.PRD_DE ||
+    null;
+
+  if (!raw) return null;
+  const s = String(raw).trim();
+  if (s.length >= 6) return s.slice(0, 6); // YYYYMMDD → YYYYMM
+  return s;
 }
 
+// ------------------------------------------------------------
+// (필요시) 변화율 필드 추출 - 현재는 없으면 null 유지
+// ------------------------------------------------------------
+function pickChangeRate(row) {
+  if (row.CHANGE_RATE !== undefined) return Number(row.CHANGE_RATE);
+  if (row.CHANGE_RT !== undefined) return Number(row.CHANGE_RT);
+  if (row.change !== undefined) return Number(row.change);
+  return null;
+}
+
+// ------------------------------------------------------------
+// R-ONE "통계 조회 조건 설정" API 호출
+//   - STATBL_ID: (월) 지역별 지가지수 → A_2024_00901
+//   - DTACYCLE_CD: MM (월)
+//   - CLS_ID: 지역 코드(명세서 기준 코드와 현재 region_code 매핑 필요)
+//   - ITM_ID: 항목 ID (예: 100001: 전체/종합 지수 등)
+//   - START_WRTTIME / END_WRTTIME: YYYYMM (또는 YYYYMMDD)
+// ------------------------------------------------------------
 export async function fetchLandPriceIndex({ fromYm, toYm, regionCode }) {
   let pIndex = 1;
-  const pSize = 100;
+  const pSize = 1000;
   const all = [];
   let ext_status = 0;
+
+  const apiKey =
+    process.env.REB_API_KEY || process.env.RONE_API_KEY || '';
+
+  if (!apiKey) {
+    console.warn('[R-ONE] REB_API_KEY / RONE_API_KEY 환경 변수가 비어 있습니다.');
+  }
 
   try {
     while (true) {
       const { data } = await axios.get(BASE, {
         params: {
-          KEY: process.env.REB_API_KEY,
-          Type: "json",
+          KEY: apiKey,
+          Type: 'json',
 
-          STATBL_ID: "A_2024_00901",
-          DTACYCLE_CD: "MM",
-          CLS_ID: regionCode,
-          ITM_ID: "100001",
+          // 통계표/주기/지역/항목 설정
+          STATBL_ID: 'A_2024_00901', // (월) 지역별 지가지수
+          DTACYCLE_CD: 'MM',
+          CLS_ID: regionCode,        // ⚠ 실제 명세서 기준 지역 코드와 매핑 필요
+          ITM_ID: '100001',          // ⚠ 엑셀 명세에서 원하는 항목 ID로 조정
 
           START_WRTTIME: fromYm,
           END_WRTTIME: toYm,
@@ -43,16 +75,22 @@ export async function fetchLandPriceIndex({ fromYm, toYm, regionCode }) {
         timeout: 10000,
       });
 
+      // 공식 가이드 기준: jsonData.SttsApiTblData[1].row
       const rows = data?.SttsApiTblData?.[1]?.row ?? [];
 
-      // ✅ 여기서 ym + index_value 로 표준화해서 service가 그대로 저장만 하게 만듦
-      const normalized = rows.map(r => ({
-        ym: pickYm(r),
-        index_value: Number(r.DTA_VAL),
-        _raw: r, // 혹시 디버깅 필요하면 남겨둠(원치 않으면 제거)
-      }))
-      // ym이 없는 쓰레기 row는 제거
-      .filter(x => x.ym);
+      const normalized = rows
+        .map((r) => {
+          const ym = pickYm(r);
+          if (!ym) return null;
+
+          return {
+            ym,                              // YYYYMM
+            index_value: Number(r.DTA_VAL),  // 통계 자료값
+            change_rate: pickChangeRate(r),  // 현재는 대부분 null
+            _raw: r,                         // 디버깅용(원치 않으면 삭제 가능)
+          };
+        })
+        .filter(Boolean);
 
       all.push(...normalized);
 
@@ -60,8 +98,8 @@ export async function fetchLandPriceIndex({ fromYm, toYm, regionCode }) {
       pIndex++;
     }
   } catch (err) {
-    console.log("[R-ONE ERROR]", err?.message || err);
-    ext_status = -2;
+    console.error('[R-ONE ERROR]', err?.message || err);
+    ext_status = -2; // 외부 연동 에러
   }
 
   return { rows: all, ext_status };
