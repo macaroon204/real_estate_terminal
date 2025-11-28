@@ -166,7 +166,7 @@ SELECT
   JSON_LENGTH(series) AS len,
   JSON_EXTRACT(series, '$[last]') AS last_item
 FROM land_price_index
-WHERE region_code = 1111010100;
+WHERE region_code = 500007;
 ```
 
 ---
@@ -176,46 +176,15 @@ WHERE region_code = 1111010100;
 ## 7-1. 전 지역 실행 (Full Sync)
 
 ```bash
-curl "http://localhost:13800/land-price-index/sync"
+curl "http://localhost:13800/land-price-index/sync/full"
+
+curl "http://localhost:13800/land-price-index/sync/update"
 ```
 
 ### 확인
 
 ```sql
 SELECT COUNT(*) FROM land_price_index;
-```
-
----
-
-## 7-2. 일부 지역 실행 (예: 11110, 11140, 11200)
-
-```bash
-curl -G "http://localhost:13800/land-price-index/sync" \
-  --data-urlencode "regions=11110,11140,11200"
-```
-
-### 확인
-
-```sql
-SELECT region_code, JSON_LENGTH(series)
-FROM land_price_index
-WHERE region_code IN (11110, 11140, 11200);
-```
-
----
-
-## 7-3. 단일 지역 실행
-
-```bash
-curl "http://localhost:13800/land-price-index/sync/1111010100"
-```
-
-### 확인
-
-```sql
-SELECT region_code, JSON_LENGTH(series)
-FROM land_price_index
-WHERE region_code = 1111010100;
 ```
 
 ---
