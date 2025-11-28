@@ -2,85 +2,43 @@
 'use strict';
 
 import {
-  SID,
-  PID,
-  INTERNAL_STATUS,
-  EXTERNAL_STATUS,
-  createLog,
-} from '../../../libs/log_spec.js';
+  logSyncStartBase,
+  logRegionErrorBase,
+  logSyncDoneBase,
+} from '../loggerBase.js';
 
+/**
+ * 전체 동기화 시작 로그 (full)
+ */
 export function logSyncStart({ cid, fromYm, toYm, totalRegions }) {
-  console.log(
-    '[LOG]',
-    createLog({
-      sid: SID.API,
-      pid: PID.SYNC_START,
-      cid,
-      value1: INTERNAL_STATUS.OK,
-      value2: EXTERNAL_STATUS.OK,
-      buffer: {
-        fromYm,
-        toYm,
-        totalRegions,
-        mode: 'full',
-      },
-    }),
-  );
+  return logSyncStartBase({
+    cid,
+    fromYm,
+    toYm,
+    totalRegions,
+    mode: 'full',
+  });
 }
 
-export function logRegionError({ cid, regionCode, reason }) {
-  console.error(
-    '[LOG]',
-    createLog({
-      sid: SID.API,
-      pid: PID.SYNC_REGION,
-      cid,
-      value1: INTERNAL_STATUS.BUSINESS_FAIL,
-      value2: EXTERNAL_STATUS.OK,
-      buffer: {
-        region_code: regionCode,
-        msg: reason,
-      },
-    }),
-  );
-}
+/**
+ * 지역 단위 에러 로그 (full)
+ */
+export const logRegionError = logRegionErrorBase;
 
-export function logSyncDone({
-  cid,
-  fromYm,
-  toYm,
-  totalRegions,
-  successRegions,
-  failRegions,
-  fetched,
-  saved,
-  elapsedMs,
-  errorRegions,
-  ext_status,
-}) {
-  console.log(
-    '[LOG]',
-    createLog({
-      sid: SID.API,
-      pid: PID.SYNC_DONE,
-      cid,
-      value1:
-        failRegions > 0
-          ? INTERNAL_STATUS.BUSINESS_FAIL
-          : INTERNAL_STATUS.OK,
-      value2: ext_status ?? EXTERNAL_STATUS.OK,
-      buffer: {
-        mode: 'full',
-        fromYm,
-        toYm,
-        totalRegions,
-        successRegions,
-        failRegions,
-        fetched,
-        saved,
-        elapsedMs,
-        errorRegions,
-      },
-    }),
-  );
+/**
+ * 전체 동기화 완료 로그 (full)
+ * - full 은 errorRegions 를 추가로 남긴다.
+ */
+export function logSyncDone(args) {
+  const {
+    errorRegions = [],
+    // 나머지는 그대로 넘김
+    ...rest
+  } = args;
+
+  return logSyncDoneBase({
+    ...rest,
+    mode: 'full',
+    extraBuffer: { errorRegions },
+  });
 }

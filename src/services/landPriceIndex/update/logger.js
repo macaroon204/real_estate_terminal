@@ -2,83 +2,35 @@
 'use strict';
 
 import {
-  SID,
-  PID,
-  INTERNAL_STATUS,
-  EXTERNAL_STATUS,
-  createLog,
-} from '../../../libs/log_spec.js';
+  logSyncStartBase,
+  logRegionErrorBase,
+  logSyncDoneBase,
+} from '../loggerBase.js';
 
+/**
+ * 업데이트 동기화 시작 로그 (update)
+ */
 export function logSyncStart({ cid, fromYm, toYm, totalRegions }) {
-  console.log(
-    '[LOG]',
-    createLog({
-      sid: SID.API,
-      pid: PID.SYNC_START,
-      cid,
-      value1: INTERNAL_STATUS.OK,
-      value2: EXTERNAL_STATUS.OK,
-      buffer: {
-        fromYm,
-        toYm,
-        totalRegions,
-        mode: 'update',
-      },
-    }),
-  );
+  return logSyncStartBase({
+    cid,
+    fromYm,
+    toYm,
+    totalRegions,
+    mode: 'update',
+  });
 }
 
-export function logRegionError({ cid, regionCode, reason }) {
-  console.error(
-    '[LOG]',
-    createLog({
-      sid: SID.API,
-      pid: PID.SYNC_REGION,
-      cid,
-      value1: INTERNAL_STATUS.BUSINESS_FAIL,
-      value2: EXTERNAL_STATUS.OK,
-      buffer: {
-        region_code: regionCode,
-        msg: reason,
-      },
-    }),
-  );
-}
+/**
+ * 지역 단위 에러 로그 (update)
+ */
+export const logRegionError = logRegionErrorBase;
 
-export function logSyncDone({
-  cid,
-  fromYm,
-  toYm,
-  totalRegions,
-  successRegions,
-  failRegions,
-  fetched,
-  saved,
-  elapsedMs,
-  ext_status,
-}) {
-  console.log(
-    '[LOG]',
-    createLog({
-      sid: SID.API,
-      pid: PID.SYNC_DONE,
-      cid,
-      value1:
-        failRegions > 0
-          ? INTERNAL_STATUS.BUSINESS_FAIL
-          : INTERNAL_STATUS.OK,
-      value2: ext_status ?? EXTERNAL_STATUS.OK,
-      buffer: {
-        mode: 'update',
-        fromYm,
-        toYm,
-        totalRegions,
-        successRegions,
-        failRegions,
-        fetched,
-        saved,
-        elapsedMs,
-      },
-    }),
-  );
+/**
+ * 업데이트 동기화 완료 로그 (update)
+ */
+export function logSyncDone(args) {
+  return logSyncDoneBase({
+    ...args,
+    mode: 'update',
+  });
 }

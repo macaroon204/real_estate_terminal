@@ -11,7 +11,7 @@ import {
 import { logSyncStart, logSyncDone, logRegionError } from './logger.js';
 import { EXTERNAL_STATUS } from '../../../libs/log_spec.js';
 
-// YYYYMM → 다음달 (utils.js 없이 사용)
+// YYYYMM → 다음달
 function nextMonth(ym) {
   let y = Math.floor(ym / 100);
   let m = ym % 100;
@@ -46,30 +46,25 @@ export async function syncUpdate({ cid, fromYm, toYm }) {
     let fetched = 0;
     let saved = 0;
 
-    // 전체 외부 상태 요약: 기본은 OK, 한 번이라도 실패나면 갱신
     let overallExtStatus = EXTERNAL_STATUS.OK;
 
     for (const r of regions) {
       const rc = r.region_code;
 
       try {
-        // DB 최신 YM (미리 조회해 둔 Map에서 사용)
         const lastYm = lastYmMap.get(rc) ?? null;
 
-        // 요청 시작 YM 계산
         let effectiveFromYm = fromYm;
         if (lastYm !== null) {
           const next = nextMonth(Number(lastYm));
           if (next > effectiveFromYm) effectiveFromYm = next;
         }
 
-        // 최신이면 skip
         if (effectiveFromYm > toYm) {
           successRegions++;
           continue;
         }
 
-        // 외부통신
         const { rows, ext_status } = await fetchLandPriceIndex({
           fromYm: effectiveFromYm,
           toYm,
@@ -92,7 +87,6 @@ export async function syncUpdate({ cid, fromYm, toYm }) {
           continue;
         }
 
-        // 시계열 변환
         let series = [];
         let prev = null;
 
@@ -113,26 +107,21 @@ export async function syncUpdate({ cid, fromYm, toYm }) {
           prev = idx;
         }
 
-        // DB merge
         await mergeSeries(conn, rc, JSON.stringify(series));
-        successRegions++;
-        fetched += rows.length;
 
-        // 저장 건수는 지역단위가 아니라 "저장된 행(row) 수" 기준으로 카운트
-        saved += rows.length;
+        fetched += rows.length;
+        saved++;
+        successRegions++;
       } catch (err) {
         failRegions++;
-        logRegionError({
-          cid,
-          regionCode: rc,
-          reason: String(err),
-        });
+        logRegionError({ cid, regionCode: rc, reason: String(err) });
       }
     }
 
     const elapsedMs = Date.now() - startTime;
 
-    logSyncDone({
+    // ✅ 요약 객체: 로그 + 응답 공통 포맷
+    const summary = {
       cid,
       fromYm,
       toYm,
@@ -143,15 +132,42 @@ export async function syncUpdate({ cid, fromYm, toYm }) {
       saved,
       elapsedMs,
       ext_status: overallExtStatus,
-    });
-
-    return {
-      ok: true,
-      mode,
-      successRegions,
-      failRegions,
     };
+
+    // 로그는 summary 기반
+    logSyncDone(summary);
+
+    // 응답도 summary 기반으로 생성
+    return buildUpdateResponseFromSummary(summary);
   } finally {
     conn.release();
   }
+}
+
+// summary → API 응답 포맷 매핑
+function buildUpdateResponseFromSummary(summary) {
+  const {
+    fromYm,
+    toYm,
+    totalRegions,
+    successRegions,
+    failRegions,
+    fetched,
+    saved,
+    ext_status,
+  } = summary;
+
+  return {
+    period: { fromYm, toYm },
+    target: {
+      totalRegions,
+      successRegions,
+      failRegions,
+    },
+    fetched,
+    saved,
+    // update는 에러 지역 리스트를 따로 모으지 않는다
+    errorRegions: [],
+    ext_status,
+  };
 }

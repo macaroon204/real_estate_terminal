@@ -1,3 +1,4 @@
+// src/services/landPriceIndex/full/syncFull.js
 'use strict';
 
 import { getConn, loadAllRegions } from './db.js';
@@ -20,7 +21,6 @@ export async function syncFull({ fromYm, toYm, cid }) {
     let totalFetched = 0;
     let totalSaved = 0;
 
-    // ← 여기 ext_status 초기값 유지
     let ext_status = EXTERNAL_STATUS.OK;
     const errorRegions = [];
 
@@ -34,10 +34,9 @@ export async function syncFull({ fromYm, toYm, cid }) {
           toYm,
         });
 
-        // 🔥 수정된 부분: 외부 오류가 처음 발생한 순간 ext_status 저장
         if (result.ext_status !== EXTERNAL_STATUS.OK) {
           if (ext_status === EXTERNAL_STATUS.OK) {
-            ext_status = result.ext_status;   // ← 버그 수정된 핵심 라인
+            ext_status = result.ext_status;
           }
 
           failRegions++;
@@ -66,9 +65,9 @@ export async function syncFull({ fromYm, toYm, cid }) {
 
     const elapsedMs = Date.now() - startedAt;
 
+    // ✅ 요약 객체: 로그 + 응답 공통 포맷
     const summary = {
       cid,
-      mode: 'full',
       fromYm,
       toYm,
       totalRegions,
@@ -81,17 +80,36 @@ export async function syncFull({ fromYm, toYm, cid }) {
       ext_status,
     };
 
+    // 로그는 summary 기반
     logSyncDone(summary);
 
-    return {
-      period: { fromYm, toYm },
-      target: { totalRegions, successRegions, failRegions },
-      fetched: totalFetched,
-      saved: totalSaved,
-      errorRegions,
-      ext_status,
-    };
+    // 응답도 summary 기반으로 생성
+    return buildFullResponseFromSummary(summary);
   } finally {
     conn.release();
   }
+}
+
+// summary → API 응답 포맷 매핑
+function buildFullResponseFromSummary(summary) {
+  const {
+    fromYm,
+    toYm,
+    totalRegions,
+    successRegions,
+    failRegions,
+    fetched,
+    saved,
+    errorRegions,
+    ext_status,
+  } = summary;
+
+  return {
+    period: { fromYm, toYm },
+    target: { totalRegions, successRegions, failRegions },
+    fetched,
+    saved,
+    errorRegions,
+    ext_status,
+  };
 }
