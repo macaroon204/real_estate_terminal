@@ -23,16 +23,24 @@ MariaDB(JSON 시계열 구조)에 저장·관리합니다.
 
 ## 1. 최소 정보
 
--   **Server** : Node.js 18+
--   **DB** : MariaDB 11.4.8 (Docker)
--   **API PORT** : `13800`
--   **DB PORT** : `3307 → 3306`
+### 시스템 환경
 
-  Endpoint                          기능
-  --------------------------------- ---------------
-  `/alive`                          서버 헬스체크
-  `/land-price-index/sync/full`     전체 동기화
-  `/land-price-index/sync/update`   증분 동기화
+| 항목 | 내용 |
+|------|------|
+| **Server** | Node.js 18+ |
+| **DB** | MariaDB 11.4.8 (Docker) |
+| **API PORT** | `13800` |
+| **DB PORT** | `3307 → 3306` |
+
+---
+
+### Endpoint
+
+| Endpoint | 기능 |
+|----------|------|
+| `/alive` | 서버 헬스체크 |
+| `/land-price-index/sync/full` | 전체 동기화 |
+| `/land-price-index/sync/update` | 증분 동기화 |
 
 ------------------------------------------------------------------------
 
