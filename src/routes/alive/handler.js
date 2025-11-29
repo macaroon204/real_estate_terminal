@@ -1,20 +1,21 @@
 // src/routes/alive/handler.js
 import * as my_lib from '../../libs/my_lib.js';
+import { env } from '../../config/env.js';
 
 export async function getAlive(req, res) {
-  let __base_url = my_lib.get_req_url(req).buffer.dest_url_path.substr(1);
-  const TITLE = __base_url + "[" + process.env.SYS_NO + "]::";
-  let LOG_BASE_HEADER =
-    my_lib.get_req_url(req).buffer.str_data + " --> " + TITLE;
+  // 요청 정보 1번만 가져오기
+  const reqInfo = my_lib.get_req_url(req);
+  const buf = reqInfo.buffer || {};
 
-  let log_msg = "[SUCC] " + LOG_BASE_HEADER + "()";
+  const basePath = (buf.dest_url_path || '/alive').substring(1);
+  const title = `${basePath}[${env.app.sysNo}]::`;
+  const logBaseHeader = `${buf.str_data ?? ''} --> ${title}`;
+  const logMsg = `[SUCC] ${logBaseHeader}()`;
 
-  let ret = my_lib.sx_ret__create(1, 0);
+  const ret = my_lib.sx_ret__create(1, 0);
+  my_lib.sx_ret__write_data(ret, { sys_no: env.app.sysNo });
 
-  let data = { sys_no: process.env.SYS_NO };
-  my_lib.sx_ret__write_data(ret, data);
-
-  console.log(log_msg);
+  console.log(logMsg);
 
   return res.status(200).json(ret);
 }

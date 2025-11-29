@@ -1,20 +1,11 @@
 // src/services/landPriceIndex/full/db.js
 'use strict';
 
-import mariadb from 'mariadb';
-
-const pool = mariadb.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  port: Number(process.env.DB_PORT || 3307),
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASS || '0000',
-  database: process.env.DB_NAME || 'realestate',
-  connectionLimit: 5,
-});
+import { getConnection } from '../../../config/db.js';
 
 // 커넥션 반환
 export async function getConn() {
-  return await pool.getConnection();
+  return await getConnection();
 }
 
 // 전체 지역 조회 (full / update 공통 개념이지만 여기선 full에서만 사용)

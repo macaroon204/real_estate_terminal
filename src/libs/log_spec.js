@@ -1,16 +1,18 @@
 // src/libs/log_spec.js
 'use strict';
 
-import { sx_ret__create, sx_ret__write_data } from './my_lib.js';
+import { LOG_ENV } from '../config/log.js';
+import { sx_ret__create, sx_ret__write_data } from './my_lib.js'
 
 /**
  * SID: 어떤 시스템의 로그인지 구분
+ * - API 는 .env 의 SYS_NO를 그대로 사용
  */
 export const SID = {
-  API: '100',   // API 서버
-  FRONT: '200', // 프론트엔드
-  AI: '300',    // AI 서버
-  JOB: '400',   // 배치/작업
+  API: LOG_ENV.SID_API, // ★ env 기반 SID
+  FRONT: '200',
+  AI: '300',
+  JOB: '400',
 };
 
 /**

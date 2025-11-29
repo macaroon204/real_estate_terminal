@@ -1,12 +1,15 @@
 'use strict';
 
+import { LOG_ENV } from '../config/log.js';
+
 //========================================================================
 export function get_req_url(req) {
 //========================================================================
-  let ret;
+  let ret = sx_ret__create(0, 0);
  
   try {
-    ret = sx_ret__create(0, 0);
+    //ret = sx_ret__create(0, 0);
+
     let data = {
         src_ip:         req.socket.remoteAddress.replace(/^.*:/, ''),
         src_port:       req.socket.remotePort,
@@ -27,7 +30,7 @@ export function get_req_url(req) {
 export function sx_ret__create(pid, cid) {
 //========================================================================
   return {
-      sid:     process.env.SYS_NO,  // sys_no
+      sid:     LOG_ENV.SID_API,  // sys_no
       pid:     pid,  // program id
       cid:     cid,  // code id
       value1:   0,   // return value --> 0,양수: 실행완료, 음수 : 실행중에러
