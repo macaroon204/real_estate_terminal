@@ -152,7 +152,31 @@ curl "http://localhost:13800/land-price-index/sync/update"
 DB 확인:
 
 ``` sql
+-- 1) land_price_index 전체 행 수
 SELECT COUNT(*) FROM land_price_index;
+
+SELECT COUNT(*) AS cnt
+FROM land_price_index;
+
+-- 2) 최근 갱신된 5개 지역의 상태 확인
+SELECT
+  region_code,
+  JSON_LENGTH(series)            AS len,        -- 시계열 길이
+  JSON_EXTRACT(series, '$[0]')   AS first_item, -- 첫 번째 값
+  JSON_EXTRACT(series, '$[last]') AS last_item, -- 마지막 값
+  updated_at
+FROM land_price_index
+ORDER BY updated_at DESC
+LIMIT 5;
+
+-- 3) 특정 지역(예: 500007)에 대한 상세 확인
+SELECT
+  region_code,
+  JSON_LENGTH(series)            AS len,
+  JSON_EXTRACT(series, '$[0]')   AS first_item,
+  JSON_EXTRACT(series, '$[last]') AS last_item
+FROM land_price_index
+WHERE region_code = 500007;
 ```
 
 ------------------------------------------------------------------------
