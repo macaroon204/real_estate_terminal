@@ -12,15 +12,33 @@
 
 ## 1. 데이터 모델 개요
 
-    region_base      ┐
-    region_parent    ├── 행정구역 정규화 구조
-    region_meta      ┘
+### 테이블 구조
 
-    land_price_index ── 지역별 JSON 시계열
-    sp_merge_land_price_index ── 병합 프로시저
+```text
+region_base      ┐
+region_parent    ├── 행정구역 정규화 구조
+region_meta      ┘
 
-설계 방향: - 행정구역: 완전 정규화 - 시계열: JSON 단일 Row 비정규화 -
-업데이트: UPSERT + 전체 시계열 병합
+land_price_index           ── 지역별 JSON 시계열 테이블
+sp_merge_land_price_index ── 시계열 병합 저장 프로시저
+```
+
+---
+
+### 설계 방향
+
+#### 행정구역
+- 완전 정규화 구조
+- 기본 / 부모 / 메타 테이블 분리
+
+#### 시계열 데이터
+- 지역 1건 = ROW 1건
+- 월별 데이터는 JSON 배열로 비정규화 저장
+
+#### 업데이트 전략
+- 지역 단위 **UPSERT**
+- 신규 데이터 + 기존 데이터 **전체 시계열 병합**
+
 
 ------------------------------------------------------------------------
 
@@ -102,13 +120,18 @@ JSON 구조:
 
 ## 3. CSV 시딩
 
-초기 데이터는 CSV를 이용해 자동 적재
+초기 기준 데이터는 Docker 컨테이너 기동 시 **CSV 파일을 이용해 자동 적재**된다.
 
-  CSV 파일            대상 테이블
-  ------------------- ---------------
-  REGION_BASE.csv     region_base
-  REGION_PARENT.csv   region_parent
-  REGION_META.csv     region_meta
+### CSV → 테이블 매핑
+
+| CSV 파일 | 대상 테이블 |
+|-----------|----------------|
+| `REGION_BASE.csv` | `region_base` |
+| `REGION_PARENT.csv` | `region_parent` |
+| `REGION_META.csv` | `region_meta` |
+
+- 모든 CSV는 `docker/db/seed_csv` 디렉토리에 위치
+- 재시작 시 항상 기준 데이터가 동일하게 초기화됨
 
 ------------------------------------------------------------------------
 
@@ -221,11 +244,20 @@ ON DUPLICATE KEY UPDATE
 
 ## 8. SQL 파일 분류
 
-  파일                           역할
-  ------------------------------ ---------------
-  00_schema.sql                  테이블 정의
-  10_seed.sql                    CSV 시딩
-  20_proc_land_price_index.sql   병합 프로시저
+### 역할별 SQL 스크립트 구성
+
+| 파일 | 역할 |
+|------------------------------|----------------|
+| `00_schema.sql` | 테이블 정의 (DDL) |
+| `10_seed.sql` | CSV 시딩 처리 |
+| `20_proc_land_price_index.sql` | JSON 병합 저장 프로시저 정의 |
+
+- 실행 순서:
+  1. `00_schema.sql`
+  2. `10_seed.sql`
+  3. `20_proc_land_price_index.sql`
+
+- Docker 초기 구동 시 위 순서대로 자동 실행됨
 
 ------------------------------------------------------------------------
 
