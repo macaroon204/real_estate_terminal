@@ -2,6 +2,7 @@
 
 .left-body__row {
   border-bottom: 1px solid #f3f3f3;
+  cursor: pointer;
 }
 
 .left-body__content {

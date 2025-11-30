@@ -1,0 +1,348 @@
+/* src/main/center/metro/metro.style.css */
+
+.metro-page {
+  padding: 24px 24px 40px;
+}
+
+/* =======================================================
+   상단 메인 차트 (3번 시안)
+======================================================= */
+
+.metro-main-chart {
+  margin-bottom: 40px;
+}
+
+.metro-main-chart__header {
+  margin-bottom: 16px;
+}
+
+.metro-main-chart__title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.metro-main-chart__subtitle {
+  font-size: 12px;
+  color: #999;
+}
+
+.metro-main-chart__body {
+  border-radius: 16px;
+  border: 1px solid #eee;
+  background-color: #fff;
+  padding: 16px 20px 20px;
+}
+
+.metro-main-chart__legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.legend-line {
+  display: inline-block;
+  width: 20px;
+  height: 3px;
+  border-radius: 999px;
+}
+
+.legend-line--avg {
+  background-color: #ff6b6b;
+}
+
+.legend-line--high {
+  background-color: #ffb3b3;
+}
+
+.legend-line--low {
+  background-color: #6bb8ff;
+}
+
+/* 차트 캔버스: 가로 스크롤 허용, 세로 크게 */
+
+.metro-main-chart__canvas {
+  position: relative;
+  border-radius: 12px;
+  background: #fafafa;
+  border: 1px dashed #e5e5e5;
+  padding: 24px 20px 52px; /* 위/아래 여백도 조금 더 */
+  height: 620px;           /* 520px → 620px */
+  box-sizing: border-box;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* SVG 폭을 고정값(예: 1400px)으로 줘서 가로 스크롤바 생성 */
+
+.metro-main-chart__svg {
+  height: 460px;  /* 380px → 460px */
+  width: 1400px;
+  display: block;
+}
+
+.metro-axis {
+  stroke: #ddd;
+  stroke-width: 0.6;
+
+  /* 🔽 기준선만 시각적으로 아래 이동 */
+  transform: translateY(12px);
+}
+
+.metro-line {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.metro-line--avg {
+  stroke: #ff6b6b;
+  stroke-width: 2;
+}
+
+.metro-line--high {
+  stroke: #ffb3b3;
+  stroke-width: 1.8;
+}
+
+.metro-line--low {
+  stroke: #6bb8ff;
+  stroke-width: 1.8;
+}
+
+/* x축 라벨 (왼쪽/오른쪽 날짜) */
+
+.metro-main-chart__xlabels {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 6px;           /* 원하는 만큼 더 내리고 싶으면 숫자만 조절 */
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #999;
+  pointer-events: none;
+}
+
+.metro-main-chart__xlabels-item { 
+    white-space: nowrap; 
+}
+
+/* y축 라벨 (좌/우) */
+
+.metro-main-chart__ylabels {
+  position: absolute;
+  top: 32px;     /* 28 → 32 */
+  bottom: 64px;  /* 52 → 64 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #999;
+  pointer-events: none;
+}
+
+.metro-main-chart__ylabels span {
+  white-space: nowrap;
+}
+
+.metro-main-chart__ylabels--left {
+  left: 6px;
+  text-align: left;
+}
+
+.metro-main-chart__ylabels--right {
+  right: 6px;
+  text-align: right;
+}
+
+/* =======================================================
+   하위 지역 (4번 시안)
+======================================================= */
+
+.metro-children {
+  margin-top: 8px;
+}
+
+.metro-children__header {
+  margin-bottom: 16px;
+}
+
+.metro-children__header h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.metro-children__header p {
+  font-size: 12px;
+  color: #999;
+}
+
+/* 최상 구 / 최하 구 상단 2개 큰 카드 */
+
+.metro-children__top-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+/* 나머지 카드 리스트 타이틀 + 3열 그리드 */
+
+.metro-children__list {
+  margin-top: 4px;
+}
+
+.metro-children__list-title {
+  font-size: 13px;
+  margin: 0 0 8px;
+  color: #666;
+}
+
+.metro-children__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3열 고정 */
+  gap: 16px;
+}
+
+/* 공통 카드 스타일 */
+
+.metro-child-card {
+  border-radius: 10px;
+  border: 1px solid #eee;
+  background-color: #fff;
+  cursor: pointer;
+  text-align: left;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.metro-child-card--above {
+  border-color: #ffb3b3;
+}
+
+.metro-child-card--below {
+  border-color: #b3d7ff;
+}
+
+.metro-child-card:hover {
+  border-color: #c5c5c5;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  transform: translateY(-1px);
+}
+
+/* 큰 카드(최상 구 / 최하 구) */
+
+.metro-child-card--big {
+  padding: 18px 20px 14px;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+}
+
+.metro-child-card__label-big {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 2px;
+}
+
+.metro-child-card__name-big {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* 작은 카드(나머지) */
+
+.metro-child-card--small {
+  padding: 12px 10px;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+.metro-child-card__name {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* 공통 메타/기간 */
+
+.metro-child-card__meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.metro-child-card__meta strong {
+  font-weight: 600;
+}
+
+.metro-child-card__year-range {
+  font-size: 11px;
+  color: #999;
+  margin-top: 4px;
+}
+
+/* 차트 영역 컨테이너 */
+
+.metro-child-card__chart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metro-child-card__chart--big {
+  margin-top: 10px;
+  height: 190px;
+}
+
+.metro-child-card__chart--small {
+  margin-top: 6px;
+  height: 160px;
+}
+
+.metro-child-card__chart-placeholder {
+  font-size: 11px;
+  color: #bbbbbb;
+  pointer-events: none;
+}
+
+/* 미니 SVG 차트 (Nationwide 스타일 참고) */
+
+.metro-mini-chart {
+  width: 100%;
+  height: 200px;
+  display: block;
+}
+
+.metro-mini-chart__line {
+  stroke-width: 2;
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.metro-mini-chart__line--above {
+  stroke: #ff5b5b;
+}
+
+.metro-mini-chart__line--below {
+  stroke: #4da3ff;
+}
+
+.metro-mini-chart__axis {
+  stroke: #dcdcdc;
+  stroke-width: 1;
+}
+
+.metro-mini-chart__axis-label {
+  font-size: 9px;
+  fill: #999999;
+  dominant-baseline: hanging;
+}

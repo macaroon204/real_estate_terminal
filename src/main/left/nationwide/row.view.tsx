@@ -1,9 +1,11 @@
 // src/sections/left/nationwide/row.view.tsx
+import { useNavigate } from 'react-router';
 
 export function NationwideRow() {
-  // 전국 클릭 시 밑작업용 핸들러 (나중에 중앙 시각화 로직 연결 예정)
+  const navigate = useNavigate();
+
   const handleClick = () => {
-    console.log('전국 지역 클릭'); // TODO: 중앙 시각화 상태 변경 등
+    navigate('/main/nationwide');
   };
 
   return (

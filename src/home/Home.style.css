@@ -1,0 +1,72 @@
+/* 전체 화면 컨테이너 */
+.home-root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+}
+
+/* 로고 */
+.home-logo {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20vw;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  z-index: 9999;
+}
+
+/* 상단 그래프 */
+.home-graph {
+  position: absolute;
+  top: 2vh;
+  right: 4vw;
+  width: 90vw;
+  height: auto;
+  z-index: 1;
+}
+
+/* 도면 */
+.home-drawing {
+  position: absolute;
+  bottom: 2vh;
+  left: 2vw;
+  width: 45vw;
+  height: auto;
+  z-index: 2;
+}
+
+/* 메인 진입 버튼 (a 태그) */
+.home-button {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  width: 10vw;
+  cursor: pointer;
+  display: block;
+
+  transition: transform 0.15s ease-in-out, filter 0.15s ease-in-out;
+  filter: brightness(1);
+  z-index: 9999999;
+}
+
+/* hover 상태 */
+.home-button--hover {
+  transform: translate(-50%, -50%) scale(1.2);
+  filter: brightness(0.95);
+}
+
+/* 버튼 이미지 */
+.home-button-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  border: none;
+}

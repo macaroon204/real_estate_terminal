@@ -18,11 +18,9 @@ export function MetroHeaderRow({ code, name, isOpen, onToggle, onLabelClick }: P
     onToggle();
   };
 
-  // ⬅️ (옵션) 라벨 클릭 분리: 라우팅/선택 등에 활용
   const onNameClick = (e: MouseEvent) => {
-    if (!onLabelClick) return;
     e.stopPropagation();
-    onLabelClick();
+    onLabelClick?.();   // 상위(LeftPanel)에서 준 함수 호출
   };
 
   return (

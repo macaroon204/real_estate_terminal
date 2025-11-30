@@ -1,0 +1,20 @@
+.subregion-container {
+  width: 100%;
+  padding: 16px;
+}
+
+.subregion-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.subregion-header h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.subregion-chart {
+  height: 400px;
+}
