@@ -206,6 +206,8 @@ PID 단계:
 npm install
 cp .env.example .env
 docker compose up --build -d
+docker compose down
+docker compose down -v
 npm start
 
 docker compose ps
